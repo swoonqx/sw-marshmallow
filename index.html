@@ -25,13 +25,13 @@ body{background:var(--bg);color:var(--text);font-family:Pretendard,"Apple SD Got
 .tools{display:flex;gap:8px}
 .gear{background:transparent;border:1px solid #2a2f35;color:#c7ccd1;border-radius:10px;width:38px;height:38px;font-size:20px;cursor:pointer;line-height:1}
 .gear:hover,.gear.on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
-.bar{display:flex;gap:8px;width:100%;max-width:min(760px,calc(100vh - 190px))}
+.bar{display:flex;gap:8px;width:100%;max-width:min(760px,calc(100dvh - 190px))}
 .bar .btn{flex:1}
 .stage{width:100%}
 .side{position:absolute;top:12px;right:12px;width:300px;max-width:calc(100% - 24px);z-index:5;display:none;flex-direction:column;gap:14px;max-height:calc(100% - 24px);overflow:auto;box-shadow:0 12px 40px rgba(0,0,0,.5)}
 .side.open{display:flex}
 .stage{display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0}
-.cvwrap{width:100%;max-width:min(760px,calc(100vh - 190px));aspect-ratio:1/1;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#0d1b2a;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.cvwrap{width:100%;max-width:min(760px,calc(100dvh - 190px));aspect-ratio:1/1;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#0d1b2a;box-shadow:0 10px 40px rgba(0,0,0,.35)}
 #scene{width:100%;height:100%;display:block;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
 #scene.down{cursor:grabbing}
 .tip{font-size:13px;color:var(--muted);text-align:center;line-height:1.5;max-width:560px}
@@ -75,6 +75,13 @@ body{background:var(--bg);color:var(--text);font-family:Pretendard,"Apple SD Got
   .app{padding:12px}
   .brand span{display:none}
   .cvwrap{max-width:100%}
+  .topbar{padding:8px 12px}
+  .brand h1{font-size:16px}
+  .app{padding:8px}
+  .side{left:12px;right:12px;width:auto;max-width:none}
+  .bar{max-width:100%}
+  .sheet{padding:12px}
+  .btn{padding:10px 8px}
 }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
@@ -819,7 +826,8 @@ function drawResultScene(g,spr,cook,cap){
 }
 function drawResult(){
   if(!hiSprite) return;
-  const cap=$('#chkText').checked?t(stage(frozenCook)==='good'?'capGood':stage(frozenCook)==='burnt'?'capBurnt':'capRaw'):null;
+  const stg=stage(frozenCook),ate=frozenBites>0;
+  const cap=$('#chkText').checked?t(stg==='good'?(ate?'capGoodEat':'capGood'):stg==='burnt'?(ate?'capBurntEat':'capBurnt'):'capRaw'):null;
   rg.setTransform(rc.width/1000,0,0,rc.width/1000,0,0);
   drawResultScene(rg,hiSprite,frozenCook,cap);
 }
