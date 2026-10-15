@@ -298,6 +298,8 @@ function buildMaps(N){
   const nA=new Float32Array(N*N),n1=valueNoise(N,5,11),n2=valueNoise(N,12,23);
   for(let i=0;i<N*N;i++) nA[i]=0.6*n1[i]+0.4*n2[i];
   const nB=valueNoise(N,Math.round(N/7),37);
+  const r1=valueNoise(N,Math.round(N/16),51),r2=valueNoise(N,Math.round(N/8),63),nC=valueNoise(N,Math.round(N/22),77),wr=new Float32Array(N*N);
+  for(let i=0;i<N*N;i++){const v1=1-Math.abs(2*r1[i]-1),v2=1-Math.abs(2*r2[i]-1);wr[i]=Math.max(smooth(0.9,1,v1)*0.8,smooth(0.93,1,v2)*0.5)}
   /* 그을린 무늬 */
   let mark=null;
   if(useMark){
@@ -324,7 +326,7 @@ function buildMaps(N){
     }
   }
   const hnA=new Float32Array(N*N);for(let i=0;i<N*N;i++)hnA[i]=h[i]/hmax;
-  return {shape,shade,expo,nA,nB,mark,hn:hnA,fl:new Float32Array(N*N),shade0:Float32Array.from(shade)};
+  return {shape,shade,expo,nA,nB,nC,wr,mark,hn:hnA,fl:new Float32Array(N*N),shade0:Float32Array.from(shade)};
 }
 
 /* 색 램프 */
@@ -353,7 +355,7 @@ function makeSprite(N){
   return {N,canvas:c,g,img:g.createImageData(N,N),maps};
 }
 function renderSprite(sp,grid,markAmt){
-  const {N,maps,img,g}=sp,D=img.data,{shape,shade,expo,nA,nB,mark,fl}=maps;
+  const {N,maps,img,g}=sp,D=img.data,{shape,shade,expo,nA,nB,nC,wr,mark,fl}=maps;
   const GG=GR,total=N*N;
   for(let i=0;i<total;i++){
     const a=shape[i],o=i*4;
@@ -841,7 +843,7 @@ $('#btnFinish').addEventListener('click',()=>{
 });
 $('#chkText').addEventListener('change',drawResult);
 $('#btnClose').addEventListener('click',()=>{$('#modal').classList.remove('open');shareNote('')});
-const SITE_URL=''; // TODO: 사이트 주소가 정해지면 여기에 입력
+const SITE_URL='https://swoonqx.github.io/sw-marshmallow/';
 const TWEET={raw:'다음 번엔 좀 더 익혀볼까?',good:'맛있게 구웠다!',burnt:'탔어...~ (  ′︵′ )つー□'};
 function shareNote(msg){const n=$('#shareNote');n.textContent=msg;n.style.display=msg?'':'none'}
 $('#btnShare').addEventListener('click',()=>{
