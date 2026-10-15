@@ -131,10 +131,8 @@ body{background:var(--bg);color:var(--text);font-family:Pretendard,"Apple SD Got
     <h3 data-i="popupTitle"></h3>
     <canvas id="result" width="1080" height="1080"></canvas>
     <label class="opt" style="margin-top:0"><input type="checkbox" id="chkText" checked><span data-i="showText"></span></label>
-    <div class="note" id="shareNote" style="display:none;margin:0"></div>
     <div class="row">
       <button class="btn primary ibtn" id="btnSave" title="이미지 저장" aria-label="이미지 저장"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></svg></button>
-      <button class="btn ibtn" id="btnShare" title="X(트위터)로 공유" aria-label="X(트위터)로 공유"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3"/></svg><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></button>
       <button class="btn small" id="btnClose" data-i="close" style="margin-left:auto"></button>
     </div>
   </div>
@@ -842,33 +840,7 @@ $('#btnFinish').addEventListener('click',()=>{
   try{document.fonts.load('48px Jua','맛있어 보인다 탔어 좀 더 익힐까').then(drawResult)}catch(e){}
 });
 $('#chkText').addEventListener('change',drawResult);
-$('#btnClose').addEventListener('click',()=>{$('#modal').classList.remove('open');shareNote('')});
-const SITE_URL='https://swoonqx.github.io/sw-marshmallow/';
-const TWEET={raw:'다음 번엔 좀 더 익혀볼까?',good:'맛있게 구웠다!',burnt:'탔어...~ (  ′︵′ )つー□'};
-function shareNote(msg){const n=$('#shareNote');n.textContent=msg;n.style.display=msg?'':'none'}
-$('#btnShare').addEventListener('click',()=>{
-  const text=TWEET[stage(frozenCook)];
-  const intent='https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+(SITE_URL?'&url='+encodeURIComponent(SITE_URL):'');
-  const canShareFiles=!!(navigator.canShare&&navigator.share);
-  const touch=matchMedia('(pointer:coarse)').matches;
-  let win=null;
-  if(!(touch&&canShareFiles)) win=window.open(intent,'_blank','noopener,width=600,height=520');
-  rc.toBlob(async b=>{
-    if(!b) return;
-    const file=new File([b],'marshmallow.png',{type:'image/png'});
-    if(touch&&canShareFiles&&navigator.canShare({files:[file]})){
-      try{await navigator.share({files:[file],text:text+(SITE_URL?' '+SITE_URL:'')});shareNote('');return}
-      catch(e){if(e&&e.name==='AbortError')return}
-    }
-    if(!win) win=window.open(intent,'_blank','noopener');
-    try{
-      await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);
-      shareNote('이미지가 클립보드에 복사됐어요. 열린 트윗 창에서 Ctrl+V(붙여넣기)로 이미지를 넣어주세요.');
-    }catch(e){
-      shareNote('이미지를 자동으로 복사하지 못했어요. [이미지 저장] 후 트윗 창에 직접 첨부해주세요.');
-    }
-  },'image/png');
-});
+$('#btnClose').addEventListener('click',()=>{$('#modal').classList.remove('open');});
 $('#modal').addEventListener('pointerdown',e=>{if(e.target.id==='modal')$('#modal').classList.remove('open')});
 $('#btnSave').addEventListener('click',()=>{
   rc.toBlob(b=>{
